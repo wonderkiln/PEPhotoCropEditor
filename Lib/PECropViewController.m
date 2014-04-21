@@ -45,6 +45,10 @@ static inline NSString *PELocalizedString(NSString *key, NSString *comment)
     self.view = contentView;
     
     self.cropView = [[PECropView alloc] initWithFrame:contentView.bounds];
+    
+    self.cropView.minAspectRatio = self.minAspectRatio;
+    self.cropView.maxAspectRatio = self.maxAspectRatio;     
+    
     [contentView addSubview:self.cropView];
 }
 

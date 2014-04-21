@@ -24,6 +24,9 @@
 @property (nonatomic) CGRect cropRect;
 @property (nonatomic) CGRect imageCropRect;
 
+@property (nonatomic) CGFloat maxAspectRatio;
+@property (nonatomic) CGFloat minAspectRatio;
+
 @property (nonatomic) CGFloat rotationAngle;
 
 - (void)resetCropRect;
