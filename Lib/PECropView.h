@@ -27,6 +27,8 @@
 @property (nonatomic) CGFloat maxAspectRatio;
 @property (nonatomic) CGFloat minAspectRatio;
 
+@property (nonatomic) BOOL zoomEnabled;
+
 @property (nonatomic) CGFloat rotationAngle;
 
 - (void)resetCropRect;

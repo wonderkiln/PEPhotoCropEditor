@@ -30,6 +30,8 @@ static const CGFloat MarginRight = MarginLeft;
 @property (nonatomic) CGRect insetRect;
 @property (nonatomic) CGRect editingRect;
 
+@property (nonatomic) CGRect myRect;
+
 @property (nonatomic, getter = isResizing) BOOL resizing;
 @property (nonatomic) UIInterfaceOrientation interfaceOrientation;
 
@@ -319,8 +321,18 @@ static const CGFloat MarginRight = MarginLeft;
 
 - (UIImage *)croppedImage
 {
+    //Dirty Workaround -- Please Fix if u have a better Idea
+    if (!self.zoomEnabled) {
+        UIImageView *view = [[UIImageView alloc] initWithImage:self.imageView.image];
+        CGFloat scaling = view.frame.size.width / self.imageView.frame.size.width;
+        CGRect converted = CGRectMake(self.myRect.origin.x * scaling, self.myRect.origin.y * scaling, self.myRect.size.width * scaling, self.myRect.size.height * scaling);
+        
+        return [self.image rotatedImageWithtransform:self.rotation croppedToRect:converted];
+    }
+    
     return [self.image rotatedImageWithtransform:self.rotation croppedToRect:self.zoomedCropRect];
 }
+
 
 - (CGRect)zoomedCropRect
 {
@@ -446,6 +458,7 @@ static const CGFloat MarginRight = MarginLeft;
 - (void)cropRectViewDidEndEditing:(PECropRectView *)cropRectView
 {
     self.resizing = NO;
+    
     [self zoomToCropRect:self.cropRectView.frame];
 }
 
@@ -475,6 +488,11 @@ static const CGFloat MarginRight = MarginLeft;
         CGRect imageViewBounds = self.imageView.bounds;
         zoomRect.origin.y = (CGRectGetHeight(imageViewBounds) / 2) - (CGRectGetHeight(zoomRect) / 2);
         zoomRect.origin.x = (CGRectGetWidth(imageViewBounds) / 2) - (CGRectGetWidth(zoomRect) / 2);
+    }
+    
+    if (![self zoomEnabled]) {
+        self.myRect = [self convertRect:toRect toView:self.imageView];
+        return;
     }
     
     [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{

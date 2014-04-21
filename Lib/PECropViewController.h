@@ -24,6 +24,8 @@
 @property (nonatomic) CGFloat maxAspectRatio;
 @property (nonatomic) CGFloat minAspectRatio;
 
+@property (nonatomic) BOOL zoomEnabled;
+
 @property (nonatomic) BOOL toolbarHidden;
 
 - (void)resetCropRect;
