@@ -153,6 +153,9 @@ static const CGFloat MarginRight = MarginLeft;
         if (self.interfaceOrientation != interfaceOrientation) {
             [self zoomToCropRect:self.scrollView.frame];
         }
+        
+        //Apply possible min, max aspects on first load
+        [self cropRectViewEditingChanged:self.cropRectView];
     }
     
     self.interfaceOrientation = interfaceOrientation;
