@@ -231,11 +231,15 @@
             rect = [self constrainedRectWithRectBasisOfWidth:rect aspectRatio:self.fixedAspectRatio];
         }
     } else if (resizeControlView == self.topLeftCornerView) {
-        rect = CGRectMake(CGRectGetMinX(self.initialRect) + resizeControlView.translation.x,
+        //USE THIS FOR DRAGGING
+        
+        rect = CGRectMake(resizeControlView.translation.x, resizeControlView.translation.y, CGRectGetWidth(self.initialRect), CGRectGetHeight(self.initialRect));
+        
+        /*rect = CGRectMake(CGRectGetMinX(self.initialRect) + resizeControlView.translation.x,
                           CGRectGetMinY(self.initialRect) + resizeControlView.translation.y,
                           CGRectGetWidth(self.initialRect) - resizeControlView.translation.x,
                           CGRectGetHeight(self.initialRect) - resizeControlView.translation.y);
-        
+        */
         if (self.keepingAspectRatio) {
             CGRect constrainedRect;
             if (fabsf(resizeControlView.translation.x) < fabsf(resizeControlView.translation.y)) {
@@ -291,13 +295,13 @@
         }
     }
 
-    CGFloat minWidth = CGRectGetWidth(self.leftEdgeView.bounds) + CGRectGetWidth(self.rightEdgeView.bounds);
+    CGFloat minWidth = 500;//CGRectGetWidth(self.leftEdgeView.bounds) + CGRectGetWidth(self.rightEdgeView.bounds);
     if (CGRectGetWidth(rect) < minWidth) {
         rect.origin.x = CGRectGetMaxX(self.frame) - minWidth;
         rect.size.width = minWidth;
     }
 
-    CGFloat minHeight = CGRectGetHeight(self.topEdgeView.bounds) + CGRectGetHeight(self.bottomEdgeView.bounds);
+    CGFloat minHeight = 500;//CGRectGetHeight(self.topEdgeView.bounds) + CGRectGetHeight(self.bottomEdgeView.bounds);
     if (CGRectGetHeight(rect) < minHeight) {
         rect.origin.y = CGRectGetMaxY(self.frame) - minHeight;
         rect.size.height = minHeight;
