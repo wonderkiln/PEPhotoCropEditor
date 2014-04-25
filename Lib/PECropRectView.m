@@ -42,6 +42,8 @@
         imageView.image = [[UIImage imageNamed:@"PEPhotoCropEditor.bundle/PEPhotoCropEditorBorder"] resizableImageWithCapInsets:UIEdgeInsetsMake(23.0f, 23.0f, 23.0f, 23.0f)];
         [self addSubview:imageView];
         
+   //     NSLog(@"%@", NSStringFromCGRect(imageView.frame));
+        
         self.topLeftCornerView = [[PEResizeControl alloc] init];
         self.topLeftCornerView.delegate = self;
         [self addSubview:self.topLeftCornerView];
@@ -295,13 +297,13 @@
         }
     }
 
-    CGFloat minWidth = 500;//CGRectGetWidth(self.leftEdgeView.bounds) + CGRectGetWidth(self.rightEdgeView.bounds);
+    CGFloat minWidth = CGRectGetWidth(self.leftEdgeView.bounds) + CGRectGetWidth(self.rightEdgeView.bounds);
     if (CGRectGetWidth(rect) < minWidth) {
         rect.origin.x = CGRectGetMaxX(self.frame) - minWidth;
         rect.size.width = minWidth;
     }
 
-    CGFloat minHeight = 500;//CGRectGetHeight(self.topEdgeView.bounds) + CGRectGetHeight(self.bottomEdgeView.bounds);
+    CGFloat minHeight = CGRectGetHeight(self.topEdgeView.bounds) + CGRectGetHeight(self.bottomEdgeView.bounds);
     if (CGRectGetHeight(rect) < minHeight) {
         rect.origin.y = CGRectGetMaxY(self.frame) - minHeight;
         rect.size.height = minHeight;
