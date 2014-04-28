@@ -449,10 +449,10 @@ static const CGFloat MarginRight = MarginLeft;
     
     CGFloat aspectRatio = CGRectGetWidth(cropRect) / CGRectGetHeight(cropRect);
     
-    if (aspectRatio >= self.maxAspectRatio)
+    if (self.maxAspectRatio && aspectRatio >= self.maxAspectRatio)
         cropRect.size.width = cropRect.size.height;
     
-    if (aspectRatio <= self.minAspectRatio)
+    if (self.minAspectRatio && aspectRatio <= self.minAspectRatio)
         cropRect.size.width = cropRect.size.height * self.minAspectRatio;
     
     [self layoutCropRectViewWithCropRect:cropRect];
