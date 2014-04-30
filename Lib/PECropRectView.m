@@ -190,6 +190,7 @@
     if ([self.delegate respondsToSelector:@selector(cropRectViewDidEndEditing:)]) {
         [self.delegate cropRectViewDidEndEditing:self];
     }
+  
 }
 
 - (CGRect)cropRectMakeWithResizeControlView:(PEResizeControl *)resizeControlView
@@ -235,7 +236,7 @@
     } else if (resizeControlView == self.topLeftCornerView) {
         //USE THIS FOR DRAGGING
         
-        rect = CGRectMake(resizeControlView.translation.x, resizeControlView.translation.y, CGRectGetWidth(self.initialRect), CGRectGetHeight(self.initialRect));
+        rect = CGRectMake(CGRectGetMinX(self.initialRect) + resizeControlView.translation.x, CGRectGetMinY(self.initialRect) + resizeControlView.translation.y, CGRectGetWidth(self.initialRect), CGRectGetHeight(self.initialRect));
         
         /*rect = CGRectMake(CGRectGetMinX(self.initialRect) + resizeControlView.translation.x,
                           CGRectGetMinY(self.initialRect) + resizeControlView.translation.y,
