@@ -455,6 +455,11 @@ static const CGFloat MarginRight = MarginLeft;
     if (self.minAspectRatio && aspectRatio <= self.minAspectRatio)
         cropRect.size.width = cropRect.size.height * self.minAspectRatio;
     
+    if (cropRect.size.width > self.imageView.frame.size.width) {
+        cropRect.size.width = self.imageView.frame.size.width;
+        cropRect.size.height = cropRect.size.width;
+    }
+    
     [self layoutCropRectViewWithCropRect:cropRect];
     
     [self automaticZoomIfEdgeTouched:cropRect];
