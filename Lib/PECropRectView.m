@@ -20,6 +20,8 @@
 @property (nonatomic) PEResizeControl *bottomEdgeView;
 @property (nonatomic) PEResizeControl *rightEdgeView;
 
+@property (nonatomic) PEResizeControl *insideView;
+
 @property (nonatomic) CGRect initialRect;
 @property (nonatomic) CGFloat fixedAspectRatio;
 
@@ -42,7 +44,11 @@
         imageView.image = [[UIImage imageNamed:@"PEPhotoCropEditor.bundle/PEPhotoCropEditorBorder"] resizableImageWithCapInsets:UIEdgeInsetsMake(23.0f, 23.0f, 23.0f, 23.0f)];
         [self addSubview:imageView];
         
-   //     NSLog(@"%@", NSStringFromCGRect(imageView.frame));
+        //ADD INSIDERECT AREA TO RESIZECONTROLL
+        self.insideView = [[PEResizeControl alloc] init];
+        self.insideView.delegate = self;
+        [self addSubview:self.insideView];
+        
         
         self.topLeftCornerView = [[PEResizeControl alloc] init];
         self.topLeftCornerView.delegate = self;
@@ -138,6 +144,8 @@
     self.leftEdgeView.frame = (CGRect){CGRectGetWidth(self.leftEdgeView.frame) / -2, CGRectGetMaxY(self.topLeftCornerView.frame), CGRectGetWidth(self.leftEdgeView.bounds), CGRectGetMinY(self.bottomLeftCornerView.frame) - CGRectGetMaxY(self.topLeftCornerView.frame)};
     self.bottomEdgeView.frame = (CGRect){CGRectGetMaxX(self.bottomLeftCornerView.frame), CGRectGetMinY(self.bottomLeftCornerView.frame), CGRectGetMinX(self.bottomRightCornerView.frame) - CGRectGetMaxX(self.bottomLeftCornerView.frame), CGRectGetHeight(self.bottomEdgeView.bounds)};
     self.rightEdgeView.frame = (CGRect){CGRectGetWidth(self.bounds) - CGRectGetWidth(self.rightEdgeView.bounds) / 2, CGRectGetMaxY(self.topRightCornerView.frame), CGRectGetWidth(self.rightEdgeView.bounds), CGRectGetMinY(self.bottomRightCornerView.frame) - CGRectGetMaxY(self.topRightCornerView.frame)};
+    
+    self.insideView.frame = CGRectMake(self.topLeftCornerView.frame.origin.x + 50, self.topLeftCornerView.frame.origin.y + 50, self.topRightCornerView.frame.origin.x - self.topLeftCornerView.frame.origin.x - 55, self.bottomLeftCornerView.frame.origin.y - self.topLeftCornerView.frame.origin.y - 55);
 }
 
 #pragma mark -
@@ -234,15 +242,13 @@
             rect = [self constrainedRectWithRectBasisOfWidth:rect aspectRatio:self.fixedAspectRatio];
         }
     } else if (resizeControlView == self.topLeftCornerView) {
-        //USE THIS FOR DRAGGING
         
-        rect = CGRectMake(CGRectGetMinX(self.initialRect) + resizeControlView.translation.x, CGRectGetMinY(self.initialRect) + resizeControlView.translation.y, CGRectGetWidth(self.initialRect), CGRectGetHeight(self.initialRect));
-        
-        /*rect = CGRectMake(CGRectGetMinX(self.initialRect) + resizeControlView.translation.x,
+        //Original resizing
+        rect = CGRectMake(CGRectGetMinX(self.initialRect) + resizeControlView.translation.x,
                           CGRectGetMinY(self.initialRect) + resizeControlView.translation.y,
                           CGRectGetWidth(self.initialRect) - resizeControlView.translation.x,
                           CGRectGetHeight(self.initialRect) - resizeControlView.translation.y);
-        */
+        
         if (self.keepingAspectRatio) {
             CGRect constrainedRect;
             if (fabsf(resizeControlView.translation.x) < fabsf(resizeControlView.translation.y)) {
@@ -296,8 +302,23 @@
                 rect = [self constrainedRectWithRectBasisOfWidth:rect aspectRatio:self.fixedAspectRatio];
             }
         }
+    } else if (resizeControlView == self.insideView){
+        //USE THIS FOR DRAGGING
+        rect = CGRectMake(CGRectGetMinX(self.initialRect) + resizeControlView.translation.x, CGRectGetMinY(self.initialRect) + resizeControlView.translation.y, CGRectGetWidth(self.initialRect), CGRectGetHeight(self.initialRect));
+        
+        if (self.keepingAspectRatio) {
+            CGRect constrainedRect;
+            if (fabsf(resizeControlView.translation.x) < fabsf(resizeControlView.translation.y)) {
+                constrainedRect = [self constrainedRectWithRectBasisOfHeight:rect aspectRatio:self.fixedAspectRatio];
+            } else {
+                constrainedRect = [self constrainedRectWithRectBasisOfWidth:rect aspectRatio:self.fixedAspectRatio];
+            }
+            constrainedRect.origin.x -= CGRectGetWidth(constrainedRect) - CGRectGetWidth(rect);
+            constrainedRect.origin.y -= CGRectGetHeight(constrainedRect) - CGRectGetHeight(rect);
+            rect = constrainedRect;
+        }
     }
-
+    
     CGFloat minWidth = CGRectGetWidth(self.leftEdgeView.bounds) + CGRectGetWidth(self.rightEdgeView.bounds);
     if (CGRectGetWidth(rect) < minWidth) {
         rect.origin.x = CGRectGetMaxX(self.frame) - minWidth;
